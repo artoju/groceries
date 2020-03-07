@@ -3,6 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import Amplify from 'aws-amplify';
+
+Amplify.configure({
+    API: {
+      endpoints: [
+        {
+          name: "groceries",
+          endpoint: process.env.REACT_APP_API_ENDPOINT,
+          region: process.env.REACT_APP_API_REGION
+        },
+      ]
+    }
+  });
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
