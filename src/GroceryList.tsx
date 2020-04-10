@@ -38,7 +38,7 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
 
     const groceryAddFunction = async (name: string) => {
         const response = await createGrocery({ listId: groceryListId, name, id: null, checked: false })
-        setGroceries([...groceries, { id: response.item.groceryId, name, checked: false }])
+        setGroceries([...groceries, { id: response.item.groceryId.S, name, checked: false }])
     }
 
     const groceryEditFunction = async (name: string, id: string) => {
