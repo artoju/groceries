@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import { GroceryListItemField } from './GroceryListItemField'
+import { useTranslation } from 'react-i18next';
 
 
 export type GroceryListItemProps = {
@@ -21,6 +22,7 @@ export type GroceryListItemProps = {
 
 export const GroceryListItem = ({ id, name, checked, checkFn, editFn, deleteFn }: GroceryListItemProps) => {
     const [editing, setEditState] = React.useState<boolean>(false);
+    const { t } = useTranslation();
     const editGrocery = () => {
         setEditState(!editing)
     }
@@ -39,6 +41,7 @@ export const GroceryListItem = ({ id, name, checked, checkFn, editFn, deleteFn }
             }}>
             <ListItemIcon>
                 <Checkbox
+                    title={t('check')}
                     checked={checked}
                     onClick={e => e.stopPropagation()}
                     onChange={() => checkFn(id)}
@@ -49,7 +52,7 @@ export const GroceryListItem = ({ id, name, checked, checkFn, editFn, deleteFn }
             </ListItemIcon>
             {editing ? <GroceryListItemField name={name} editFn={editName}></GroceryListItemField> : <ListItemText>{name}</ListItemText>}
             <ListItemSecondaryAction>
-                <IconButton onClick={() => deleteFn(id)} edge="end" aria-label="delete">
+                <IconButton title={t('delete')} onClick={() => deleteFn(id)} edge="end" aria-label="delete">
                     <DeleteIcon />
                 </IconButton>
             </ListItemSecondaryAction>

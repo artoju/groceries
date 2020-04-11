@@ -4,6 +4,7 @@ import { GroceryAdder } from './GroceryAdder'
 import List from '@material-ui/core/List'
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { createGrocery, listGroceries, updateGrocery, deleteGrocery } from './client'
+import { useTranslation } from 'react-i18next';
 const uuidv4 = require('uuid/v4')
 
 interface IGrocery {
@@ -24,6 +25,7 @@ interface IGroceryResponse {
 type RParam = { groceryListId?: string }
 
 const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
+    const { t } = useTranslation();
 
     const [groceryListId, setGroceryListId] = React.useState<string>("");
     const [groceries, setGroceries] = React.useState<Array<IGrocery>>([]);
@@ -110,10 +112,14 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
             <List>
                 {unchecked}
             </List>
-            <p>Done</p>
+        { checked.length > 0 && 
+        <div>
+        <p>{t('collected')}</p>
             <List>
                 {checked}
-            </List>
+            </List> 
+            </div>
+        }
         </div>
 
     )

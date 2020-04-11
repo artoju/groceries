@@ -5,6 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import { Divider } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 type GroceryAdderProps = {
     addFn: Function
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export const GroceryAdder = ({ addFn }: GroceryAdderProps) => {
     const [name, setName] = React.useState<string>("");
     const classes = useStyles()
+    const { t } = useTranslation();
 
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -49,9 +51,10 @@ export const GroceryAdder = ({ addFn }: GroceryAdderProps) => {
                 className={classes.input}
                 onChange={e => setName(e.target.value)}
                 onKeyPress={handleKeyPress}
+                placeholder={t('addPlaceholder')}
             />
             <Divider className={classes.divider} orientation="vertical"/>
-            <IconButton className={classes.iconButton} onClick={addItem} aria-label="search">
+            <IconButton title={t('add')} className={classes.iconButton} onClick={addItem} aria-label="search">
                 <AddIcon />
             </IconButton>
         </Paper>
