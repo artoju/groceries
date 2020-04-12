@@ -2,6 +2,18 @@ import React, { useEffect } from 'react';
 import { GroceryListItem } from './GroceryListItem'
 import { GroceryAdder } from './GroceryAdder'
 import List from '@material-ui/core/List'
+import Chip from '@material-ui/core/Chip'
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Tooltip from '@material-ui/core/Tooltip';
+import Snackbar from '@material-ui/core/Snackbar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ShareIcon from '@material-ui/icons/Share';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Alert from '@material-ui/lab/Alert';
+import Grid from '@material-ui/core/Grid';
+
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { createGrocery, listGroceries, updateGrocery, deleteGrocery } from './client'
 import { useTranslation } from 'react-i18next';
@@ -24,15 +36,42 @@ interface IGroceryResponse {
 
 type RParam = { groceryListId?: string }
 
+const useStyles = makeStyles((theme) => ({
+    "groceries-chips": {
+        display: 'flex',
+        justifyContent: 'left',
+        flexWrap: 'wrap',
+        padding: "4px",
+        marginTop: "4px",
+    },
+    "locale-buttons": {
+        display: 'flex',
+        justifyContent: 'left',
+    },
+    "locale-button": {
+        fontSize: "1rem",
+        minWidth: "46px"
+    },
+    chip: {
+        margin: "2px",
+    },
+    root: {
+        backgroundColor: "#4caf50"
+    }
+}));
+
 const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
-    const { t } = useTranslation();
 
     const [groceryListId, setGroceryListId] = React.useState<string>("");
     const [groceries, setGroceries] = React.useState<Array<IGrocery>>([]);
+    const [copyMessageOpen, setCopyMessageOpen] = React.useState<boolean>(false)
+
+    const { t } = useTranslation();
+    const classes = useStyles();
     const history = useHistory()
 
     const groceryCheckFunction = async (id: string) => {
-        let grocery = Object.assign({listId: groceryListId},groceries.find(g => g.id === id))
+        let grocery = Object.assign({ listId: groceryListId }, groceries.find(g => g.id === id))
         grocery.checked = !grocery.checked
         const response = await updateGrocery(grocery)
         setGroceries(groceries.map(g => (g.id === id ? grocery : g)))
@@ -50,9 +89,19 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
     }
 
     const groceryDeleteFunction = async (id: string) => {
-        const response = await deleteGrocery({listId: groceryListId, id, name:"", checked: false})
+        const response = await deleteGrocery({ listId: groceryListId, id, name: "", checked: false })
         setGroceries(groceries.filter(g => g.id !== id))
+    }
 
+    const groceryClear = () => {
+        setGroceries([])
+    }
+
+    const openCopyMessage = () => {
+        setCopyMessageOpen(true)
+    }
+    const handleCopyMessageClose = () => {
+        setCopyMessageOpen(false)
     }
 
     useEffect(() => {
@@ -87,13 +136,13 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
         groceries.forEach(grocery => {
 
             const listItem = <GroceryListItem
-            id={grocery.id}
-            key={grocery.id}
-            name={grocery.name}
-            checked={grocery.checked}
-            checkFn={groceryCheckFunction}
-            editFn={groceryEditFunction}
-            deleteFn={groceryDeleteFunction}></GroceryListItem>
+                id={grocery.id}
+                key={grocery.id}
+                name={grocery.name}
+                checked={grocery.checked}
+                checkFn={groceryCheckFunction}
+                editFn={groceryEditFunction}
+                deleteFn={groceryDeleteFunction}></GroceryListItem>
 
             if (grocery.checked) {
                 checked.push(listItem)
@@ -101,25 +150,67 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
                 unchecked.push(listItem)
             }
         })
-        return {checked, unchecked}
+        return { checked, unchecked }
+    }
+    const shareList = async () => {
+        try {
+            console.log(window.location.href)
+            await navigator.clipboard.writeText(window.location.href)
+            openCopyMessage()
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const { checked, unchecked } = createLists()
-
+    const copyTitle = t('copyUrl')
+    const clearListTitle = t('clearList')
+    const copyListMessage = t('copiedListUrl')
     return (
         <div>
+            <Grid item sm={12} md={2}>
+                <ToggleButtonGroup size="small" exclusive className={classes["locale-buttons"]}>
+                    <ToggleButton className={classes["locale-button"]}>EN</ToggleButton>
+                    <ToggleButton className={classes["locale-button"]}>FI</ToggleButton>
+                </ToggleButtonGroup>
+            </Grid>
             <GroceryAdder addFn={groceryAddFunction}></GroceryAdder>
+            <Paper elevation={2} square className={classes["groceries-chips"]}>
+                <Chip className={classes.chip}
+                    label={t('share')}
+                    onDelete={shareList}
+                    deleteIcon={<Tooltip title={copyTitle} placement="right"><ShareIcon /></Tooltip>}
+                />
+                <Chip className={classes.chip}
+                    label={t('listCount', { count: groceries.length })}
+                    onDelete={groceryClear}
+                    deleteIcon={<Tooltip title={clearListTitle} placement="right"><DeleteIcon /></Tooltip>}
+                />
+            </Paper>
             <List>
                 {unchecked}
             </List>
-        { checked.length > 0 && 
-        <div>
-        <p>{t('collected')}</p>
-            <List>
-                {checked}
-            </List> 
-            </div>
-        }
+            {checked.length > 0 &&
+                <div>
+                    <p>{t('collected')}</p>
+                    <List>
+                        {checked}
+                    </List>
+                </div>
+            }
+            <Snackbar
+
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={copyMessageOpen}
+                onClose={handleCopyMessageClose}
+                autoHideDuration={6000}
+                color="success"
+                message={copyListMessage}
+            >
+                <Alert onClose={handleCopyMessageClose} severity="success">
+                    This is a success message!
+                </Alert>
+            </Snackbar>
         </div>
 
     )

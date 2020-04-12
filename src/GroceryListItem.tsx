@@ -1,6 +1,7 @@
 import React from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItem from '@material-ui/core/ListItem';
+import Tooltip from '@material-ui/core/Tooltip';
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -32,6 +33,9 @@ export const GroceryListItem = ({ id, name, checked, checkFn, editFn, deleteFn }
         setEditState(false)
     }
 
+    const uncheckTitle = t('uncheck')
+    const checkTitle = t('check')
+    const deleteTitle = t('delete')
     return (
         <ListItem
             button={true}
@@ -40,21 +44,24 @@ export const GroceryListItem = ({ id, name, checked, checkFn, editFn, deleteFn }
                 root: 'grocery-item'
             }}>
             <ListItemIcon>
-                <Checkbox
-                    title={t('check')}
-                    checked={checked}
-                    onClick={e => e.stopPropagation()}
-                    onChange={() => checkFn(id)}
-                    inputProps={{
-                        'aria-label': 'check item',
-                    }}
-                />
+                <Tooltip title={checked ? uncheckTitle : checkTitle} placement="left">
+                    <Checkbox
+                        checked={checked}
+                        onClick={e => e.stopPropagation()}
+                        onChange={() => checkFn(id)}
+                        inputProps={{
+                            'aria-label': 'check item',
+                        }}
+                    />
+                </Tooltip>
             </ListItemIcon>
             {editing ? <GroceryListItemField name={name} editFn={editName}></GroceryListItemField> : <ListItemText>{name}</ListItemText>}
             <ListItemSecondaryAction>
-                <IconButton title={t('delete')} onClick={() => deleteFn(id)} edge="end" aria-label="delete">
-                    <DeleteIcon />
-                </IconButton>
+                <Tooltip title={deleteTitle} placement="right">
+                    <IconButton onClick={() => deleteFn(id)} edge="end" aria-label="delete">
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
             </ListItemSecondaryAction>
 
         </ListItem>)

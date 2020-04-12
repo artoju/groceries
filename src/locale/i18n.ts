@@ -15,11 +15,15 @@ i18n.init({
                 add: 'Add',
                 addPlaceholder: 'Type name of product',
                 check: 'Mark as collected',
-                delete: 'Delete product',
+                uncheck: 'Remove from collected',
+                delete: 'Delete from list',
                 share: 'Share list',
                 listCount: '{{count}} product',
                 listCount_plural: '{{count}} products',
-                collected: "Collected"
+                collected: "Collected",
+                clearList: "Clear list",
+                copyUrl: "Copy url to clipboard",
+                copiedListUrl: "Copied url to clipboard"
             },
         },
         fi: {
@@ -27,11 +31,15 @@ i18n.init({
                 add: 'Lisää',
                 addPlaceholder: 'Kirjoita tuotteen nimi',
                 check: 'Merkkaa kerätyksi',
-                delete: 'Poista tuote',
+                uncheck: 'Poista kerätyistä',
+                delete: 'Poista listasta',
                 share: 'Jaa lista',
                 listCount: '{{count}} tuote',
                 listCount_plural: '{{count}} tuotetta',
-                collected: "Kerätty"
+                collected: "Kerätty",
+                clearList: "Tyhjennä lista",
+                copyUrl: "Kopioi sivun osoite",
+                copiedListUrl: "Kopioitu leikepöydälle"
             },
         }
     },
