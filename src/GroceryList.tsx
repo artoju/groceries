@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "1rem",
         minWidth: "46px"
     },
+
     chip: {
         margin: "2px",
     },
@@ -65,32 +66,35 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
     const [groceryListId, setGroceryListId] = React.useState<string>("");
     const [groceries, setGroceries] = React.useState<Array<IGrocery>>([]);
     const [copyMessageOpen, setCopyMessageOpen] = React.useState<boolean>(false)
+    const [locale, setLocale] = React.useState<string>("en")
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const classes = useStyles();
     const history = useHistory()
 
     const groceryCheckFunction = async (id: string) => {
         let grocery = Object.assign({ listId: groceryListId }, groceries.find(g => g.id === id))
         grocery.checked = !grocery.checked
-        const response = await updateGrocery(grocery)
         setGroceries(groceries.map(g => (g.id === id ? grocery : g)))
+        const response = await updateGrocery(grocery)
     }
 
     const groceryAddFunction = async (name: string) => {
+        const placeholder = uuidv4()
+        setGroceries([...groceries, { id: placeholder, name, checked: false }])
         const response = await createGrocery({ listId: groceryListId, name, id: null, checked: false })
         setGroceries([...groceries, { id: response.item.groceryId.S, name, checked: false }])
     }
 
     const groceryEditFunction = async (name: string, id: string) => {
         const grocery = Object.assign({}, groceries.find(g => g.id === id), { name, listId: groceryListId })
-        const response = await updateGrocery(grocery)
         setGroceries(groceries.map(g => (g.id === id ? Object.assign({}, g, { name }) : g)))
+        const response = await updateGrocery(grocery)
     }
 
     const groceryDeleteFunction = async (id: string) => {
-        const response = await deleteGrocery({ listId: groceryListId, id, name: "", checked: false })
         setGroceries(groceries.filter(g => g.id !== id))
+        const response = await deleteGrocery({ listId: groceryListId, id, name: "", checked: false })
     }
 
     const groceryClear = () => {
@@ -162,16 +166,21 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
         }
     }
 
+    const selectLocale = (event: React.MouseEvent<HTMLElement, MouseEvent>, newLocale: any) => {
+        setLocale(newLocale)
+        i18n.changeLanguage(newLocale)
+    }
+
     const { checked, unchecked } = createLists()
     const copyTitle = t('copyUrl')
     const clearListTitle = t('clearList')
     const copyListMessage = t('copiedListUrl')
     return (
         <div>
-            <Grid item sm={12} md={2}>
-                <ToggleButtonGroup size="small" exclusive className={classes["locale-buttons"]}>
-                    <ToggleButton className={classes["locale-button"]}>EN</ToggleButton>
-                    <ToggleButton className={classes["locale-button"]}>FI</ToggleButton>
+            <Grid item xs={2}>
+                <ToggleButtonGroup value={locale} onChange={selectLocale} size="small" exclusive className={classes["locale-buttons"]}>
+                    <ToggleButton value="en" className={classes["locale-button"]}>EN</ToggleButton>
+                    <ToggleButton value="fi" className={classes["locale-button"]}>FI</ToggleButton>
                 </ToggleButtonGroup>
             </Grid>
             <GroceryAdder addFn={groceryAddFunction}></GroceryAdder>
@@ -192,7 +201,7 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
             </List>
             {checked.length > 0 &&
                 <div>
-                    <p>{t('collected')}</p>
+                    <p style={{margin:"0em"}}>{t('collected')}</p>
                     <List>
                         {checked}
                     </List>
@@ -205,10 +214,9 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
                 onClose={handleCopyMessageClose}
                 autoHideDuration={6000}
                 color="success"
-                message={copyListMessage}
             >
                 <Alert onClose={handleCopyMessageClose} severity="success">
-                    This is a success message!
+                    {copyListMessage}
                 </Alert>
             </Snackbar>
         </div>

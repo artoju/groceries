@@ -11,12 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.MuiButtonBase-root.grocery-item {
-  background-color: #4CAF50;
-  margin: 5px 0 5px 0;
-}
-
-.MuiButtonBase-root.grocery-item:hover {
-  background-color: rgba(76, 175, 79, 0.555);
-}
