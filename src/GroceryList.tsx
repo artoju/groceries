@@ -15,7 +15,7 @@ import Alert from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid';
 
 import { RouteComponentProps, useHistory } from 'react-router-dom';
-import { createGrocery, listGroceries, updateGrocery, deleteGrocery } from './client'
+import { createGrocery, listGroceries, updateGrocery, deleteGrocery, clearGroceries } from './client'
 import { useTranslation } from 'react-i18next';
 const uuidv4 = require('uuid/v4')
 
@@ -97,8 +97,9 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
         const response = await deleteGrocery({ listId: groceryListId, id, name: "", checked: false })
     }
 
-    const groceryClear = () => {
+    const groceryClear = async () => {
         setGroceries([])
+        await clearGroceries(groceryListId)
     }
 
     const openCopyMessage = () => {

@@ -28,3 +28,7 @@ export const deleteGrocery = async (values: Grocery) => {
         body: values
     })
 }
+
+export const clearGroceries = async (listId: string) => {
+    return await API.del("groceries", `/groceries/${listId}`, {})
+}
