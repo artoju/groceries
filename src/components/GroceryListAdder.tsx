@@ -7,8 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { Divider, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-type GroceryAdderProps = {
-  addFn: Function
+type GroceryListAdderProps = {
+  addFn: (name: string) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const GroceryAdder = ({ addFn }: GroceryAdderProps) => {
+export const GroceryListAdder = ({ addFn }: GroceryListAdderProps) => {
   const [name, setName] = React.useState<string>("");
   const classes = useStyles()
   const { t } = useTranslation();

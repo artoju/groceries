@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { GroceryListItem } from './GroceryListItem'
-import { GroceryAdder } from './GroceryAdder'
+import { GroceryListAdder } from './GroceryListAdder'
 import List from '@material-ui/core/List'
 import Chip from '@material-ui/core/Chip'
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -15,7 +15,7 @@ import Alert from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid';
 
 import { RouteComponentProps, useHistory } from 'react-router-dom';
-import { createGrocery, listGroceries, updateGrocery, deleteGrocery, clearGroceries } from './client'
+import { createGrocery, listGroceries, updateGrocery, deleteGrocery, clearGroceries } from '../api'
 import { useTranslation } from 'react-i18next';
 const uuidv4 = require('uuid/v4')
 
@@ -184,7 +184,7 @@ const GroceryList: React.FC<RouteComponentProps<RParam>> = ({ match }) => {
                     <ToggleButton value="fi" className={classes["locale-button"]}>FI</ToggleButton>
                 </ToggleButtonGroup>
             </Grid>
-            <GroceryAdder addFn={groceryAddFunction}></GroceryAdder>
+            <GroceryListAdder addFn={groceryAddFunction}></GroceryListAdder>
             <Paper elevation={2} square className={classes["groceries-chips"]}>
                 <Chip className={classes.chip}
                     label={t('share')}

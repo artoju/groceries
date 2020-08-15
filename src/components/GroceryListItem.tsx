@@ -17,9 +17,9 @@ export type GroceryListItemProps = {
     id: string;
     name: string;
     checked: boolean;
-    checkFn: Function;
-    deleteFn: Function;
-    editFn: Function;
+    checkFn: (id: string) => void;
+    deleteFn: (id: string) => void;
+    editFn: (name: string, id: string) => void;
 }
 const useStyles = makeStyles((theme) => ({
     listItem: {

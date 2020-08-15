@@ -5,7 +5,7 @@ import InputBase from '@material-ui/core/InputBase';
 
 export type GroceryListItemFieldProps = {
     name: string;
-    editFn: Function;
+    editFn: (name: string) => void;
 }
 const useStyles = makeStyles((theme) => ({
     input: {
